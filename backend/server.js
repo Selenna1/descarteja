@@ -19,7 +19,7 @@ const pontoSchema = new mongoose.Schema({
   endereco: String,
   residuos: String,
   latitude: Number,
-  longitude: Number
+  longitude: Number,
 });
 const Ponto = mongoose.model("Ponto", pontoSchema);
 app.get("/pontos", async (req, res) => {
@@ -33,20 +33,21 @@ app.post("/pontos", async (req, res) => {
   res.json(novoPonto);
 });
 app.delete("/pontos/:id", async (req, res) => {
-  await Ponto.findByIdAndDelete(req.params.id)
+  await Ponto.findByIdAndDelete(req.params.id);
   res.json({
-    mensagem: "Ponto removido com sucesso"
-  })
-})
+    mensagem: "Ponto removido com sucesso",
+  });
+});
 app.put("/pontos/:id", async (req, res) => {
   const pontoAtualizado = await Ponto.findByIdAndUpdate(
     req.params.id,
     req.body,
-    { new: true }
-  )
-  res.json(pontoAtualizado)
-})
+    { new: true },
+  );
+  res.json(pontoAtualizado);
+});
 
+const PORT = process.env.PORT || 3000;
 app.listen(3000, () => {
   console.log("Servidor rodando na porta 3000");
 });
