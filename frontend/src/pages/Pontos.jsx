@@ -42,7 +42,7 @@ function Pontos() {
     return
   }
   const resposta = await fetch(
-    `http://localhost:3000/pontos/${ponto._id}`,
+    `https://descarteja-backend.onrender.com/pontos/${ponto._id}`,
     {
       method: "PUT",
       headers: {
@@ -68,14 +68,14 @@ function Pontos() {
 }
 
   async function excluirPonto(id) {
-  await fetch(`http://localhost:3000/pontos/${id}`, {
+  await fetch(`https://descarteja-backend.onrender.com/pontos/${id}`, {
     method: "DELETE"
   })
   setPontos(pontos.filter((ponto) => ponto._id !== id))
   }
 
   useEffect(() => {
-    fetch("http://localhost:3000/pontos")
+    fetch("https://descarteja-backend.onrender.com/pontos")
       .then((res) => res.json())
       .then((data) => setPontos(data))
   }, [])

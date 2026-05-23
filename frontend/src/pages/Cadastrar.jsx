@@ -20,7 +20,7 @@ function Cadastrar() {
       latitude: Number(latitude),
       longitude: Number(longitude)
     }
-    await fetch("http://localhost:3000/pontos", {
+    await fetch("https://descarteja-backend.onrender.com/pontos", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
