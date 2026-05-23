@@ -35,6 +35,7 @@ function Home() {
           <h2 className="title">Sustentabilidade e conscientização</h2>
           <p>O DescarteJá busca incentivar práticas sustentáveis por meio da conscientizzação ambiental e da facilitação do acesso a pontos de coleta de resíduos eletrônicos. </p>
         </section>
+      </main>
       <Footer />
     </div>
   )
