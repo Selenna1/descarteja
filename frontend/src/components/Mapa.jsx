@@ -34,9 +34,11 @@ function Mapa({ pontos }) {
             icon={iconeReciclagem}
           >
             <Popup>
-              <strong>{ponto.nome}</strong>
-              <br />
-              {ponto.endereco}
+              <div className="popup-content"> 
+                <h3>♻️ {ponto.nome}</h3>
+                <p>📍 {ponto.endereco}</p>
+                <p>🔋 {ponto.residuos}</p>
+              </div>
             </Popup>
           </Marker>
         ))}
