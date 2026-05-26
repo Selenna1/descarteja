@@ -6,7 +6,7 @@ function Login() {
   async function fazerLogin(e) {
     e.preventDefault()
     const resposta = await fetch(
-      "https://descarteja-backend.onrender.com",
+      "https://descarteja-backend.onrender.com/login",
       {
         method: "POST",
         headers: {
