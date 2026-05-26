@@ -14,6 +14,7 @@ function Navbar() {
         <Link to="/" className="nav-link">Home</Link>
         <Link to="/pontos" className="nav-link">Pontos de Coleta</Link>
         <Link to="/cadastrar" className="nav-link">Cadastrar</Link>
+        <Link to="/quiz" className="nav-link" >Quiz</Link>
         {adminLogado && (
           <button className="logout-button"onClick={logout}>Sair</button>
         )}

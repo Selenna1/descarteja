@@ -1,23 +1,32 @@
-import { useEffect, useState } from "react"
-import Navbar from "../components/Navbar"
-import Footer from "../components/Footer"
-import "../styles/pontos.css"
-import Mapa from "../components/Mapa"
-import { toast } from "react-toastify"
+import { useEffect, useState } from "react";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import "../styles/pontos.css";
+import Mapa from "../components/Mapa";
+import { toast } from "react-toastify";
 
 function Pontos() {
-  const [pontos, setPontos] = useState([])
-  const [busca, setBusca] = useState("")
-  const adminLogado = localStorage.getItem("token")
-
+  const [pontos, setPontos] = useState([]);
+  const [busca, setBusca] = useState("");
+  const adminLogado = localStorage.getItem("token");
+  function calcularMedia(avaliacoes) {
+  if (!avaliacoes || avaliacoes.length === 0) {
+    return 0
+  }
+  const soma = avaliacoes.reduce(
+    (total, avaliacao) => total + avaliacao.nota,
+    0
+  )
+  return (soma / avaliacoes.length).toFixed(1)
+}
   async function editarPonto(ponto) {
-    if (!ponto || !ponto._id) return
+    if (!ponto || !ponto._id) return;
 
-    const novoNome = prompt("Novo nome:", ponto.nome)
-    const novoEndereco = prompt("Novo endereço:", ponto.endereco)
-    const novosResiduos = prompt("Novos resíduos:", ponto.residuos)
-    const novaLatitude = prompt("Nova latitude:", ponto.latitude || "")
-    const novaLongitude = prompt("Nova longitude:", ponto.longitude || "")
+    const novoNome = prompt("Novo nome:", ponto.nome);
+    const novoEndereco = prompt("Novo endereço:", ponto.endereco);
+    const novosResiduos = prompt("Novos resíduos:", ponto.residuos);
+    const novaLatitude = prompt("Nova latitude:", ponto.latitude || "");
+    const novaLongitude = prompt("Nova longitude:", ponto.longitude || "");
 
     if (
       novoNome === null ||
@@ -26,7 +35,7 @@ function Pontos() {
       novaLatitude === null ||
       novaLongitude === null
     ) {
-      return
+      return;
     }
 
     const resposta = await fetch(
@@ -35,31 +44,61 @@ function Pontos() {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
           nome: novoNome,
           endereco: novoEndereco,
           residuos: novosResiduos,
           latitude: Number(novaLatitude),
-          longitude: Number(novaLongitude)
-        })
-      }
-    )
+          longitude: Number(novaLongitude),
+        }),
+      },
+    );
 
-    const pontoAtualizado = await resposta.json()
-
-    setPontos(
-      pontos.map((p) =>
-        p._id === ponto._id ? pontoAtualizado : p
-      )
-    )
-    toast.success("Ponto atualizado com sucesso!")
+    const pontoAtualizado = await resposta.json();
+    setPontos(pontos.map((p) => (p._id === ponto._id ? pontoAtualizado : p)));
+    toast.success("Ponto atualizado com sucesso!");
   }
 
   async function excluirPonto(id) {
-    await fetch(
-      `https://descarteja-backend.onrender.com/pontos/${id}`,
+    await fetch(`https://descarteja-backend.onrender.com/pontos/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    setPontos(pontos.filter((ponto) => ponto._id !== id));
+    toast.success("Ponto removido com sucesso!");
+  }
+  async function avaliarPonto(id) {
+    const nota = prompt("Dê uma nota de 1 a 5:");
+    const comentario = prompt("Escreva um comentário:");
+    if (!nota || !comentario) {
+      return;
+    }
+    const resposta = await fetch(
+      `https://descarteja-backend.onrender.com/pontos/${id}/avaliacoes`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nota: Number(nota),
+          comentario,
+        }),
+      },
+    );
+    const pontoAtualizado = await resposta.json();
+    setPontos(
+      pontos.map((ponto) => (ponto._id === id ? pontoAtualizado : ponto)),
+    );
+    toast.success("Avaliação enviada com sucesso!");
+  }
+  async function excluirAvaliacao(pontoId, avaliacaoIndex) {
+    const resposta = await fetch(
+      `http://localhost:3000/pontos/${pontoId}/avaliacoes/${avaliacaoIndex}`,
       {
         method: "DELETE",
         headers: {
@@ -67,46 +106,22 @@ function Pontos() {
         }
       }
     )
+    const pontoAtualizado = await resposta.json()
     setPontos(
-      pontos.filter((ponto) => ponto._id !== id)
+      pontos.map((ponto) =>
+        ponto._id === pontoId ? pontoAtualizado : ponto
+      )
     )
-    toast.success("Ponto removido com sucesso!")
+    toast.success("Avaliação removida com sucesso!")
   }
-  async function avaliarPonto(id) {
-  const nota = prompt("Dê uma nota de 1 a 5:")
-  const comentario = prompt("Escreva um comentário:")
-  if (!nota || !comentario) {
-    return
-  }
-  const resposta = await fetch(
-    `https://descarteja-backend.onrender.com/pontos/${id}/avaliacoes`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        nota: Number(nota),
-        comentario
-      })
-    }
-  )
-  const pontoAtualizado = await resposta.json()
-  setPontos(
-    pontos.map((ponto) =>
-      ponto._id === id ? pontoAtualizado : ponto
-    )
-  )
-  toast.success("Avaliação enviada com sucesso!")
-}
   useEffect(() => {
     fetch("https://descarteja-backend.onrender.com/pontos")
       .then((res) => res.json())
-      .then((data) => setPontos(data))
-  }, [])
+      .then((data) => setPontos(data));
+  }, []);
   const pontosFiltrados = pontos.filter((ponto) =>
-    ponto.nome.toLowerCase().includes(busca.toLowerCase())
-  )
+    ponto.nome.toLowerCase().includes(busca.toLowerCase()),
+  );
   return (
     <div>
       <Navbar />
@@ -126,28 +141,52 @@ function Pontos() {
           {pontosFiltrados.map((ponto) => (
             <div key={ponto._id} className="ponto-card">
               <h2 className="ponto-nome">{ponto.nome}</h2>
+              <p className="media-avaliacoes">
+                {"⭐".repeat(
+                  Math.round(calcularMedia(ponto.avaliacoes))
+                )}
+                {"☆".repeat(
+                  5 - Math.round(calcularMedia(ponto.avaliacoes))
+                )}
+                {" "}
+                ({calcularMedia(ponto.avaliacoes)})
+              </p>
               <p>
                 <strong>Endereço:</strong> {ponto.endereco}
               </p>
               <p>
                 <strong>Resíduos:</strong> {ponto.residuos}
               </p>
-              <button className="avaliar-button" onClick={() => avaliarPonto(ponto._id)}>Avaliar</button>
+              <button
+                className="avaliar-button"
+                onClick={() => avaliarPonto(ponto._id)}
+              >
+                Avaliar
+              </button>
               {ponto.avaliacoes &&
                 ponto.avaliacoes.map((avaliacao, index) => (
-                  <div
-                    key={index}
-                    className="avaliacao-card"
-                  >
-                    <p>
-                      ⭐ {avaliacao.nota}/5
+                  <div key={index} className="avaliacao-card">
+                    <p className="estrelas">
+                      {"⭐".repeat(avaliacao.nota)}
+                      {"☆".repeat(5 - avaliacao.nota)}
                     </p>
-
-                    <p>
-                      {avaliacao.comentario}
+                    <p>{avaliacao.comentario}</p>
+                    <p className="data-avaliacao">
+                      📅 {" "}
+                      {new Date(
+                        avaliacao.data
+                      ).toLocaleDateString("pt-BR")}
                     </p>
+                     {adminLogado && (
+                      <button
+                        className="excluir-avaliacao-button"
+                        onClick={() => excluirAvaliacao(ponto._id, index)}
+                      >
+                        Excluir avaliação
+                      </button>
+                    )}
                   </div>
-              ))}
+                ))}
               {adminLogado && (
                 <>
                   <button
@@ -170,7 +209,7 @@ function Pontos() {
       </main>
       <Footer />
     </div>
-  )
+  );
 }
 
-export default Pontos
+export default Pontos;

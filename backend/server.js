@@ -97,6 +97,16 @@ app.post("/pontos/:id/avaliacoes", async (req, res) => {
   await ponto.save()
   res.json(ponto)
 })
+app.delete(
+  "/pontos/:pontoId/avaliacoes/:avaliacaoIndex",
+  verificarToken,
+  async (req, res) => {
+    const ponto = await Ponto.findById(req.params.pontoId)
+    ponto.avaliacoes.splice(req.params.avaliacaoIndex, 1)
+    await ponto.save()
+    res.json(ponto)
+  }
+)
 /*
 app.post("/register", async (req, res) => {
   const { email, senha } = req.body
