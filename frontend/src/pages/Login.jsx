@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { toast } from "react-toastify"
 
 function Login() {
   const [email, setEmail] = useState("")
@@ -24,9 +25,9 @@ function Login() {
         "token",
         dados.token
       )
-      alert("Login realizado com sucesso")
+      toast.success("Login realizado com sucesso")
     } else {
-      alert(dados.mensagem)
+      toast.error(dados.mensagem)
     }
   }
   return (

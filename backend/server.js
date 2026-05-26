@@ -22,6 +22,15 @@ const pontoSchema = new mongoose.Schema({
   residuos: String,
   latitude: Number,
   longitude: Number,
+  avaliacoes:[
+    {nota: Number,
+      comentario: String,
+      data: {
+        type: Date,
+        default: Date.now
+      }
+    }
+  ]
 });
 const Ponto = mongoose.model("Ponto", pontoSchema);
 const usuarioSchema = new mongoose.Schema({
@@ -78,6 +87,17 @@ app.put("/pontos/:id", verificarToken, async (req, res) => {
   );
   res.json(pontoAtualizado);
 });
+app.post("/pontos/:id/avaliacoes", async (req, res) => {
+  const { nota, comentario } = req.body
+  const ponto = await Ponto.findById(req.params.id)
+  ponto.avaliacoes.push({
+    nota,
+    comentario
+  })
+  await ponto.save()
+  res.json(ponto)
+})
+/*
 app.post("/register", async (req, res) => {
   const { email, senha } = req.body
   const hashedSenha = await bcrypt.hash(senha, 10)
@@ -90,6 +110,7 @@ app.post("/register", async (req, res) => {
     mensagem: "Admin criado com sucesso"
   })
 })
+*/  
 app.post("/login", async (req, res) => {
   const { email, senha } = req.body
   const usuario = await Usuario.findOne({

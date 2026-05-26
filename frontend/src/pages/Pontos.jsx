@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import "../styles/pontos.css"
 import Mapa from "../components/Mapa"
+import { toast } from "react-toastify"
 
 function Pontos() {
   const [pontos, setPontos] = useState([])
@@ -53,6 +54,7 @@ function Pontos() {
         p._id === ponto._id ? pontoAtualizado : p
       )
     )
+    toast.success("Ponto atualizado com sucesso!")
   }
 
   async function excluirPonto(id) {
@@ -65,22 +67,46 @@ function Pontos() {
         }
       }
     )
-
     setPontos(
       pontos.filter((ponto) => ponto._id !== id)
     )
+    toast.success("Ponto removido com sucesso!")
   }
-
+  async function avaliarPonto(id) {
+  const nota = prompt("Dê uma nota de 1 a 5:")
+  const comentario = prompt("Escreva um comentário:")
+  if (!nota || !comentario) {
+    return
+  }
+  const resposta = await fetch(
+    `https://descarteja-backend.onrender.com/pontos/${id}/avaliacoes`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        nota: Number(nota),
+        comentario
+      })
+    }
+  )
+  const pontoAtualizado = await resposta.json()
+  setPontos(
+    pontos.map((ponto) =>
+      ponto._id === id ? pontoAtualizado : ponto
+    )
+  )
+  toast.success("Avaliação enviada com sucesso!")
+}
   useEffect(() => {
     fetch("https://descarteja-backend.onrender.com/pontos")
       .then((res) => res.json())
       .then((data) => setPontos(data))
   }, [])
-
   const pontosFiltrados = pontos.filter((ponto) =>
     ponto.nome.toLowerCase().includes(busca.toLowerCase())
   )
-
   return (
     <div>
       <Navbar />
@@ -106,6 +132,22 @@ function Pontos() {
               <p>
                 <strong>Resíduos:</strong> {ponto.residuos}
               </p>
+              <button className="avaliar-button" onClick={() => avaliarPonto(ponto._id)}>Avaliar</button>
+              {ponto.avaliacoes &&
+                ponto.avaliacoes.map((avaliacao, index) => (
+                  <div
+                    key={index}
+                    className="avaliacao-card"
+                  >
+                    <p>
+                      ⭐ {avaliacao.nota}/5
+                    </p>
+
+                    <p>
+                      {avaliacao.comentario}
+                    </p>
+                  </div>
+              ))}
               {adminLogado && (
                 <>
                   <button

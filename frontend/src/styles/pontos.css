@@ -10,15 +10,21 @@
   margin-top: 30px;
 }
 .ponto-card {
-  background-color: white;
+  background: white;
+  border-radius: 18px;
   padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  transition: 0.3s;
-  cursor: pointer;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  border: 1px solid #e0e0e0;
+  animation: aparecerCard 0.5s ease;
 }
 .ponto-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-6px);
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.15);
 }
 .ponto-nome {
   color: #2e7d32;
@@ -65,4 +71,29 @@
 .popup-content p {
   margin: 5px 0;
   font-size: 14px;
+}
+@keyframes aparecerCard {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.avaliar-button {
+  margin-top: 15px;
+  margin-right: 10px;
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+.avaliar-button:hover {
+  background-color: #1b5e20;
 }

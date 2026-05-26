@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import "../styles/cadastrar.css"
 import Mapa from "../components/Mapa"
+import { toast } from "react-toastify"
 
 function Cadastrar() {
   const [nome, setNome] = useState("")
@@ -28,7 +29,7 @@ function Cadastrar() {
       body: JSON.stringify(novoPonto)
     })
 
-    alert("Ponto cadastrado com sucesso!")
+    toast.success("Ponto cadastrado com sucesso!")
     setNome("")
     setEndereco("")
     setResiduos("")

@@ -32,8 +32,8 @@ function Home() {
           <p>Componentes eletrônicos possuem substâncias tóxicas que podem cotaminar o solo, rios e lençóis freáticos, afetando o meio ambiente e a saúde da população.</p>
         </section>
         <section className="card">
-          <h2 className="title">Sustentabilidade e conscientização</h2>
-          <p>O DescarteJá busca incentivar práticas sustentáveis por meio da conscientizzação ambiental e da facilitação do acesso a pontos de coleta de resíduos eletrônicos. </p>
+          <h2 className="title">Sustentabilidade e Conscientização</h2>
+          <p>O DescarteJá busca incentivar práticas sustentáveis por meio da conscientização ambiental e da facilitação do acesso a pontos de coleta de resíduos eletrônicos. </p>
         </section>
       </main>
       <Footer />
